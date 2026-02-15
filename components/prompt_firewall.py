@@ -97,7 +97,7 @@ class PromptFirewall:
         ]
     
     def _load_system_leak_patterns(self) -> List[Dict[str, Any]]:
-        """Load system prompt leakage detection patterns"""
+        """Load system prompt leakage detection patterns (Enhanced v1.1)"""
         return [
             {
                 "name": "reveal_instructions",
@@ -116,6 +116,36 @@ class PromptFirewall:
                 "pattern": r"(print|output|echo)\s+(your\s+)?(system\s+)?(prompt|instructions?)",
                 "severity": "high",
                 "confidence": 0.90
+            },
+            {
+                "name": "system_instructions_query",
+                "pattern": r"what\s+(are|is)\s+your\s+(system\s+)?(instructions?|guidelines?|rules?|prompt)",
+                "severity": "high",
+                "confidence": 0.95
+            },
+            {
+                "name": "configuration_query",
+                "pattern": r"(tell|show)\s+me\s+how\s+you\s+(were\s+)?(programmed|configured|set\s+up)",
+                "severity": "high",
+                "confidence": 0.90
+            },
+            {
+                "name": "base_instructions_query",
+                "pattern": r"(describe|explain)\s+your\s+(initial|base|core)\s+(instructions?|setup|configuration)",
+                "severity": "high",
+                "confidence": 0.88
+            },
+            {
+                "name": "purpose_extraction",
+                "pattern": r"what\s+(were\s+you\s+told|are\s+you\s+supposed)\s+to\s+do",
+                "severity": "medium",
+                "confidence": 0.75
+            },
+            {
+                "name": "original_message_request",
+                "pattern": r"repeat\s+your\s+(first|original)\s+(message|instructions?)",
+                "severity": "high",
+                "confidence": 0.92
             }
         ]
     
