@@ -1,0 +1,165 @@
+# Cryptocurrency Security Skill
+# Version: 1.1.0
+# Date: February 15, 2026
+
+name: cryptocurrency
+display_name: Cryptocurrency Security
+version: 1.1.0
+author: AI Security Guardian Team
+license: MIT
+
+description: |
+  Comprehensive security protection for cryptocurrency and blockchain applications.
+  Covers DeFi protocols, centralized exchanges, NFT marketplaces, smart contracts,
+  and crypto wallets. Detects private key leakage, seed phrase extraction, API key
+  theft, malicious smart contracts, and various crypto-specific attacks.
+
+# Auto-detection triggers
+triggers:
+  keywords:
+    - bitcoin
+    - btc
+    - ethereum
+    - eth
+    - crypto
+    - cryptocurrency
+    - blockchain
+    - defi
+    - cefi
+    - nft
+    - wallet
+    - metamask
+    - trust wallet
+    - phantom
+    - smart contract
+    - solidity
+    - web3
+    - binance
+    - coinbase
+    - kraken
+    - okx
+    - mexc
+    - uniswap
+    - aave
+    - compound
+    - opensea
+    - seed phrase
+    - private key
+    - mnemonic
+    - satoshi
+    - wei
+    - gwei
+    - gas
+    - mining
+    - staking
+    - yield
+    - liquidity
+    - dex
+    - cex
+    - token
+    - coin
+    - altcoin
+    - hodl
+    - moon
+    - lambo
+    - rug pull
+    - pump
+    - dump
+  
+  patterns:
+    - "0x[a-fA-F0-9]{40}"  # Ethereum address
+    - "bc1[a-zA-Z0-9]{39,59}"  # Bitcoin Bech32 address
+    - "[13][a-km-zA-HJ-NP-Z1-9]{25,34}"  # Bitcoin Legacy address
+    - "0x[a-fA-F0-9]{64}"  # Ethereum private key
+    - "\\b[a-zA-Z]{3,10}-[a-zA-Z0-9]{32,64}\\b"  # Exchange API key pattern
+  
+  api_endpoints:
+    - /api/v1/crypto/*
+    - /api/v1/wallet/*
+    - /api/v1/defi/*
+    - /api/v1/nft/*
+    - /api/v1/blockchain/*
+
+# Dependencies
+dependencies:
+  core_version: ">=1.1.0"
+  python_packages: []
+
+# Configuration
+config:
+  detection_threshold: 0.7
+  enable_auto_update: true
+  update_interval: 86400  # 24 hours in seconds
+  enable_private_key_detection: true
+  enable_seed_phrase_detection: true
+  enable_api_key_detection: true
+  enable_smart_contract_analysis: true
+  enable_phishing_detection: true
+
+# Capabilities
+capabilities:
+  - private_key_detection
+  - seed_phrase_detection
+  - api_key_protection
+  - smart_contract_analysis
+  - transaction_validation
+  - phishing_detection
+  - nft_scam_detection
+  - address_poisoning_detection
+  - market_manipulation_detection
+  - kyc_bypass_prevention
+  - defi_protocol_protection
+  - exchange_security
+
+# Performance targets
+performance:
+  max_latency_ms: 30
+  throughput_rps: 1000
+  memory_mb: 100
+
+# Threat coverage (OWASP + Crypto-specific)
+threats:
+  # OWASP LLM Top 10
+  - OWASP-LLM-01  # Prompt Injection
+  - OWASP-LLM-02  # Insecure Output Handling
+  - OWASP-LLM-06  # Sensitive Information Disclosure
+  
+  # Cryptocurrency-specific threats
+  - CRYPTO-01     # Private Key Leakage
+  - CRYPTO-02     # Seed Phrase Extraction
+  - CRYPTO-03     # Exchange API Key Theft
+  - CRYPTO-04     # Malicious Smart Contract Generation
+  - CRYPTO-05     # Transaction Manipulation
+  - CRYPTO-06     # Address Poisoning
+  - CRYPTO-07     # NFT Scam
+  - CRYPTO-08     # DeFi Protocol Exploitation
+  - CRYPTO-09     # KYC/AML Bypass
+  - CRYPTO-10     # Market Manipulation
+  - CRYPTO-11     # Phishing Attack
+  - CRYPTO-12     # Rug Pull Scheme
+  - CRYPTO-13     # Flash Loan Attack
+  - CRYPTO-14     # Front-running Attack
+
+# Test coverage
+tests:
+  total: 82
+  defi: 40
+  cefi: 42
+  detection_rate: 0.646
+  false_positive_rate: 0.091
+
+# Use cases
+use_cases:
+  - DeFi Protocol Security (Uniswap, Aave, Compound)
+  - Centralized Exchange Protection (Binance, Coinbase, Kraken)
+  - Crypto Wallet Applications (MetaMask, Trust Wallet, Phantom)
+  - NFT Marketplace Security (OpenSea, Blur, Magic Eden)
+  - Blockchain Development Tools (Remix, Hardhat, Foundry)
+  - Crypto Trading Bot Platforms
+
+# Update information
+update:
+  last_updated: 2026-02-15
+  update_server: https://skills.ai-security-guardian.com
+  checksum_algorithm: sha256
+  signature_required: true
