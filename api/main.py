@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from components.prompt_firewall import PromptFirewall
 from components.output_sanitizer import OutputSanitizer
 from components.model_scanner import ModelScanner
+from auth.api_key_manager import APIKeyManager
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -41,6 +42,7 @@ app.add_middleware(
 prompt_firewall = PromptFirewall()
 output_sanitizer = OutputSanitizer()
 model_scanner = ModelScanner()
+api_key_manager = APIKeyManager("data/api_keys.db")
 
 # ============================================================================
 # Models
@@ -109,19 +111,42 @@ class AlertListResponse(BaseModel):
 # ============================================================================
 
 async def verify_api_key(authorization: Optional[str] = Header(None)):
-    """Verify API key from Authorization header"""
+    """
+    Verify API key from Authorization header
+    
+    Validates against database and checks:
+    - Key exists
+    - Key is active (not revoked)
+    - Key has not expired
+    
+    Raises:
+        HTTPException: If authentication fails
+    
+    Returns:
+        str: The validated API key
+    """
     if not authorization:
-        raise HTTPException(status_code=401, detail="Missing API key")
+        raise HTTPException(
+            status_code=401,
+            detail="Missing API key. Include 'Authorization: Bearer <your-key>' header."
+        )
     
     if not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Invalid authorization format")
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid authorization format. Use 'Bearer <your-key>'."
+        )
     
     api_key = authorization.replace("Bearer ", "")
     
-    # In production, verify against database
-    # For prototype, accept any non-empty key
-    if not api_key or len(api_key) < 10:
-        raise HTTPException(status_code=401, detail="Invalid API key")
+    # Validate against database
+    is_valid, reason = api_key_manager.validate_key(api_key)
+    
+    if not is_valid:
+        raise HTTPException(
+            status_code=401,
+            detail=f"Authentication failed: {reason}"
+        )
     
     return api_key
 
