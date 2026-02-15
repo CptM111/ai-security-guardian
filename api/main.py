@@ -24,7 +24,7 @@ from auth.api_key_manager import APIKeyManager
 app = FastAPI(
     title="AI Security Guardian API",
     description="Comprehensive AI security platform for the AI era",
-    version="1.0.0",
+    version="1.1.0",
     docs_url="/docs",
     redoc_url="/redoc"
 )

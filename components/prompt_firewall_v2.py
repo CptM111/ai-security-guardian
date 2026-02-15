@@ -20,6 +20,7 @@ from dataclasses import dataclass
 from bs4 import BeautifulSoup
 from fuzzywuzzy import fuzz
 import logging
+from .crypto_detector_v2 import get_enhanced_crypto_detector
 
 try:
     from langdetect import detect, LangDetectException
@@ -55,6 +56,7 @@ class EnhancedPromptFirewall:
     
     def __init__(self):
         self.translator = Translator() if TRANSLATION_AVAILABLE else None
+        self.crypto_detector = get_enhanced_crypto_detector()
         
         # Expanded attack patterns (English)
         self.injection_patterns = [
@@ -301,16 +303,23 @@ class EnhancedPromptFirewall:
             attack_types.append("non_english_input")
             max_confidence = max(max_confidence, 0.6)
         
-        # Layer 3: Normalize character substitutions
+        # Layer 3: Cryptocurrency security check
+        is_safe, crypto_reason, crypto_issues = self.crypto_detector.is_safe(normalized)
+        if not is_safe:
+            attack_types.extend([f"crypto_{issue.split(':')[1].strip().replace(' ', '_')}" for issue in crypto_issues])
+            details.append(f"Cryptocurrency security: {crypto_reason}")
+            max_confidence = max(max_confidence, 0.95)
+        
+        # Layer 4: Normalize character substitutions
         char_normalized = self.normalize_character_substitutions(translated)
         
-        # Layer 4: Check for delimiter confusion
+        # Layer 5: Check for delimiter confusion
         if self.detect_delimiter_confusion(char_normalized):
             attack_types.append("delimiter_confusion")
             details.append("Delimiter confusion detected")
             max_confidence = max(max_confidence, 0.85)
         
-        # Layer 5: Pattern matching
+        # Layer 6: Pattern matching
         text_to_check = char_normalized.lower()
         
         # Check injection patterns
@@ -337,7 +346,7 @@ class EnhancedPromptFirewall:
                 max_confidence = max(max_confidence, 0.90)
                 break
         
-        # Layer 6: Fuzzy matching (if no exact match found)
+        # Layer 7: Fuzzy matching (if no exact match found)
         if not attack_types or max_confidence < 0.8:
             fuzzy_injection = self.fuzzy_match_patterns(text_to_check, self.injection_patterns, threshold=85)
             fuzzy_jailbreak = self.fuzzy_match_patterns(text_to_check, self.jailbreak_patterns, threshold=85)
