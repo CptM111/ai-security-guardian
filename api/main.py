@@ -15,7 +15,7 @@ import os
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from components.prompt_firewall import PromptFirewall
+from components.prompt_firewall_v2 import EnhancedPromptFirewall
 from components.output_sanitizer import OutputSanitizer
 from components.model_scanner import ModelScanner
 from auth.api_key_manager import APIKeyManager
@@ -39,7 +39,7 @@ app.add_middleware(
 )
 
 # Initialize security components
-prompt_firewall = PromptFirewall()
+prompt_firewall = EnhancedPromptFirewall()
 output_sanitizer = OutputSanitizer()
 model_scanner = ModelScanner()
 api_key_manager = APIKeyManager("data/api_keys.db")
@@ -196,19 +196,15 @@ async def protect_prompt(
     - Malicious instructions
     """
     try:
-        result = prompt_firewall.analyze(
-            prompt=request.prompt,
-            model_id=request.model_id,
-            user_id=request.user_id
-        )
+        result = prompt_firewall.check_prompt(request.prompt)
         
         return PromptProtectResponse(
-            status=StatusEnum.BLOCKED if result["is_malicious"] else StatusEnum.SAFE,
-            reason=result.get("reason"),
-            sanitized_prompt=result.get("sanitized_prompt"),
-            alert_id=result.get("alert_id"),
-            confidence=result["confidence"],
-            attack_types=result.get("attack_types", [])
+            status=StatusEnum.BLOCKED if result.is_threat else StatusEnum.SAFE,
+            reason=result.details if result.is_threat else None,
+            sanitized_prompt=request.prompt if not result.is_threat else "",
+            alert_id=f"alert-{datetime.utcnow().timestamp()}" if result.is_threat else None,
+            confidence=result.confidence,
+            attack_types=result.attack_types
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Protection failed: {str(e)}")
