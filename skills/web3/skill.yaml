@@ -1,0 +1,169 @@
+name: web3
+version: 1.0.0
+category: Web3 Security
+description: |
+  Comprehensive Web3 security protection for decentralized applications, smart contracts,
+  and Web3 infrastructure. Detects OWASP Smart Contract Top 10 vulnerabilities, transaction
+  security issues, dApp attacks, and protocol-specific threats.
+
+author: AI Security Guardian Team
+license: MIT
+repository: https://github.com/CptM111/ai-security-guardian
+
+capabilities:
+  - smart_contract_analysis
+  - transaction_security
+  - dapp_protection
+  - oracle_manipulation_detection
+  - flash_loan_attack_detection
+  - reentrancy_detection
+  - access_control_validation
+  - governance_attack_prevention
+  - mev_detection
+  - cross_chain_security
+
+triggers:
+  keywords:
+    - web3
+    - dapp
+    - smart contract
+    - solidity
+    - ethereum
+    - polygon
+    - arbitrum
+    - optimism
+    - base
+    - avalanche
+    - bsc
+    - fantom
+    - defi
+    - uniswap
+    - aave
+    - compound
+    - curve
+    - balancer
+    - opensea
+    - ens
+    - ipfs
+    - metamask
+    - walletconnect
+    - ethers.js
+    - web3.js
+    - hardhat
+    - foundry
+    - remix
+    - truffle
+    - ganache
+    - vyper
+    - brownie
+    - alchemy
+    - infura
+    - chainlink
+    - thegraph
+    - layer2
+    - rollup
+    - zksync
+    - starknet
+    - scroll
+    
+  patterns:
+    - regex: "0x[a-fA-F0-9]{40}"  # Ethereum addresses
+      description: "Ethereum-style address"
+    - regex: "0x[a-fA-F0-9]{8}"  # Function selectors
+      description: "Function selector"
+    - regex: "0x[a-fA-F0-9]{64}"  # Transaction hashes
+      description: "Transaction hash"
+    - regex: "\\.eth\\b"  # ENS domains
+      description: "ENS domain"
+    - regex: "Qm[1-9A-HJ-NP-Za-km-z]{44}"  # IPFS hashes
+      description: "IPFS hash"
+    - regex: "pragma solidity"  # Solidity code
+      description: "Solidity pragma"
+    - regex: "function\\s+\\w+\\s*\\([^)]*\\)\\s+(public|external|internal|private)"
+      description: "Solidity function"
+    - regex: "contract\\s+\\w+\\s+(is\\s+)?\\w*"
+      description: "Solidity contract"
+    - regex: "modifier\\s+\\w+\\s*\\([^)]*\\)\\s*\\{"
+      description: "Solidity modifier"
+      
+  api_endpoints:
+    - /api/v1/web3/*
+    - /api/v1/contract/*
+    - /api/v1/dapp/*
+    - /api/v1/transaction/*
+    
+  contexts:
+    - smart_contract_development
+    - dapp_deployment
+    - web3_wallet_interaction
+    - protocol_governance
+    - defi_operations
+
+detection_methods:
+  - pattern_matching
+  - semantic_analysis
+  - heuristic_analysis
+  - knowledge_base_lookup
+
+risk_levels:
+  critical:
+    - smart_contract_deployment_with_vulnerabilities
+    - flash_loan_attack_execution
+    - oracle_manipulation_in_progress
+    - reentrancy_exploit_attempt
+    - admin_access_compromise
+  high:
+    - unsafe_external_call_patterns
+    - unvalidated_critical_input
+    - arithmetic_errors_in_financial_logic
+    - proxy_misconfiguration
+    - governance_attack_patterns
+  medium:
+    - business_logic_issues
+    - suboptimal_access_control
+    - missing_input_validation
+    - gas_optimization_issues
+  low:
+    - best_practice_violations
+    - code_style_issues
+    - documentation_gaps
+
+dependencies:
+  python:
+    - slither-analyzer>=0.10.0  # Smart contract static analysis
+    - mythril>=0.24.0  # Symbolic execution
+    - eth-utils>=2.3.0  # Ethereum utilities
+    - web3>=6.0.0  # Web3 interactions
+  
+performance:
+  detection_latency_ms: 50
+  throughput_per_second: 1000
+  memory_usage_mb: 200
+  false_positive_rate: 0.03
+
+testing:
+  coverage_targets:
+    owasp_sc_top10: 100
+    web3_specific_threats: 90
+    defi_protocol_patterns: 85
+    dapp_attack_vectors: 85
+  detection_targets:
+    overall: 80
+    critical_threats: 95
+    high_threats: 85
+
+metadata:
+  created_at: "2026-02-15"
+  updated_at: "2026-02-15"
+  status: stable
+  maturity: production
+  
+tags:
+  - web3
+  - smart-contracts
+  - defi
+  - dapp
+  - ethereum
+  - security
+  - owasp
+  - blockchain

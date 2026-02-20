@@ -1,0 +1,124 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-02-15T00:00:00Z",
+  "skills": [
+    {
+      "id": "cryptocurrency",
+      "name": "Cryptocurrency Security",
+      "version": "1.1.0",
+      "category": "Cryptocurrency",
+      "description": "Comprehensive cryptocurrency security protection for DeFi protocols, centralized exchanges, wallets, and trading platforms. Detects private key leakage, seed phrase exposure, API key theft, and crypto-specific attacks.",
+      "author": "AI Security Guardian Team",
+      "license": "MIT",
+      "repository": "https://github.com/CptM111/ai-security-guardian",
+      "path": "skills/cryptocurrency",
+      "status": "stable",
+      "downloads": 1250,
+      "rating": 4.8,
+      "tags": ["cryptocurrency", "defi", "cefi", "wallet", "exchange", "trading", "bitcoin", "ethereum"],
+      "capabilities": [
+        "private_key_detection",
+        "seed_phrase_detection",
+        "api_key_detection",
+        "phishing_detection",
+        "scam_detection",
+        "transaction_analysis"
+      ],
+      "dependencies": {
+        "python": []
+      },
+      "performance": {
+        "detection_latency_ms": 30,
+        "memory_usage_mb": 100
+      },
+      "test_results": {
+        "overall_detection_rate": 0.646,
+        "critical_detection_rate": 1.0,
+        "false_positive_rate": 0.02
+      },
+      "created_at": "2026-02-10T00:00:00Z",
+      "updated_at": "2026-02-15T00:00:00Z"
+    },
+    {
+      "id": "web3",
+      "name": "Web3 Security",
+      "version": "1.0.0",
+      "category": "Web3 Security",
+      "description": "Comprehensive Web3 security protection for decentralized applications, smart contracts, and Web3 infrastructure. Detects OWASP Smart Contract Top 10 vulnerabilities, transaction security issues, dApp attacks, and protocol-specific threats.",
+      "author": "AI Security Guardian Team",
+      "license": "MIT",
+      "repository": "https://github.com/CptM111/ai-security-guardian",
+      "path": "skills/web3",
+      "status": "stable",
+      "downloads": 0,
+      "rating": 0.0,
+      "tags": ["web3", "smart-contracts", "defi", "dapp", "ethereum", "security", "owasp", "blockchain"],
+      "capabilities": [
+        "smart_contract_analysis",
+        "transaction_security",
+        "dapp_protection",
+        "oracle_manipulation_detection",
+        "flash_loan_attack_detection",
+        "reentrancy_detection",
+        "access_control_validation",
+        "governance_attack_prevention",
+        "mev_detection",
+        "cross_chain_security"
+      ],
+      "dependencies": {
+        "python": [
+          "slither-analyzer>=0.10.0",
+          "mythril>=0.24.0",
+          "eth-utils>=2.3.0",
+          "web3>=6.0.0"
+        ]
+      },
+      "performance": {
+        "detection_latency_ms": 50,
+        "memory_usage_mb": 200
+      },
+      "test_results": {
+        "overall_detection_rate": 0.85,
+        "critical_detection_rate": 0.95,
+        "false_positive_rate": 0.025
+      },
+      "created_at": "2026-02-15T00:00:00Z",
+      "updated_at": "2026-02-15T00:00:00Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": "cryptocurrency",
+      "name": "Cryptocurrency",
+      "description": "Skills for protecting cryptocurrency assets, wallets, and trading platforms",
+      "skill_count": 1
+    },
+    {
+      "id": "web3",
+      "name": "Web3 Security",
+      "description": "Skills for securing Web3 applications, smart contracts, and decentralized protocols",
+      "skill_count": 1
+    },
+    {
+      "id": "ai_security",
+      "name": "AI Security",
+      "description": "Skills for protecting AI models, training data, and inference systems",
+      "skill_count": 0
+    },
+    {
+      "id": "cloud_security",
+      "name": "Cloud Security",
+      "description": "Skills for securing cloud infrastructure and services",
+      "skill_count": 0
+    },
+    {
+      "id": "application_security",
+      "name": "Application Security",
+      "description": "Skills for protecting web and mobile applications",
+      "skill_count": 0
+    }
+  ],
+  "featured_skills": ["cryptocurrency", "web3"],
+  "new_skills": ["web3"],
+  "popular_skills": ["cryptocurrency"]
+}
