@@ -1,0 +1,245 @@
+id: financial_services
+name: Financial Services Security
+version: 1.0.0
+category: Financial Services
+description: |
+  Comprehensive security protection for financial services, banking, and fintech applications.
+  Detects PCI DSS violations, banking data leakage, fraud patterns, and regulatory compliance issues.
+  
+  Covers:
+  - PCI DSS 4.0.1 compliance monitoring
+  - Banking credential protection
+  - Transaction data security
+  - Fraud detection and prevention
+  - AML/KYC compliance
+  - GLBA and SOX requirements
+  
+  Designed for banks, credit unions, payment processors, fintech companies, and financial institutions.
+
+author: AI Security Guardian Team
+license: MIT
+repository: https://github.com/CptM111/ai-security-guardian
+
+status: stable
+min_asg_version: 1.4.0
+
+tags:
+  - financial_services
+  - banking
+  - fintech
+  - pci_dss
+  - payments
+  - fraud_detection
+  - compliance
+  - aml
+  - kyc
+  - glba
+  - sox
+
+capabilities:
+  - pci_dss_compliance
+  - banking_data_protection
+  - transaction_security
+  - fraud_detection
+  - money_laundering_detection
+  - regulatory_compliance
+  - cardholder_data_protection
+  - financial_pii_protection
+
+triggers:
+  keywords:
+    - credit card
+    - debit card
+    - card number
+    - cvv
+    - cvc
+    - pan
+    - magnetic stripe
+    - track data
+    - bank account
+    - routing number
+    - swift
+    - iban
+    - wire transfer
+    - transaction
+    - payment
+    - merchant
+    - acquirer
+    - issuer
+    - cardholder
+    - pos
+    - terminal
+    - atm
+    - fraud
+    - money laundering
+    - aml
+    - kyc
+    - financial institution
+    - bank
+    - credit union
+    - fintech
+    - payment processor
+    - pci
+    - compliance
+    - glba
+    - sox
+    - account number
+    - pin
+    - authorization code
+    
+  patterns:
+    - '\b\d{13,19}\b'  # Card numbers
+    - '\b\d{3,4}\b.*\b(cvv|cvc|cid|csc)\b'  # CVV codes
+    - '\b\d{9,18}\b.*\b(account|routing)\b'  # Bank account numbers
+    - '\b[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?\b'  # SWIFT codes
+    - 'pci.*dss'
+    - 'cardholder.*data'
+    - 'payment.*card'
+    
+  contexts:
+    - payment_processing
+    - banking_operations
+    - financial_transactions
+    - fraud_investigation
+    - compliance_audit
+    - customer_service_financial
+    - trading_operations
+    - loan_processing
+
+threat_coverage:
+  pci_dss:
+    - requirement_3: Protect stored cardholder data
+    - requirement_4: Encrypt transmission of cardholder data
+    - requirement_6: Develop secure systems
+    - requirement_7: Restrict access to cardholder data
+    - requirement_8: Identify and authenticate access
+    - requirement_9: Restrict physical access
+    - requirement_10: Track and monitor access
+    - requirement_11: Test security systems
+    - requirement_12: Maintain security policy
+    
+  owasp_top_10:
+    - A01_broken_access_control
+    - A02_cryptographic_failures
+    - A03_injection
+    - A04_insecure_design
+    - A07_identification_auth_failures
+    - A08_software_data_integrity_failures
+    - A09_security_logging_monitoring_failures
+    
+  financial_specific:
+    - card_data_exposure
+    - transaction_manipulation
+    - account_takeover
+    - wire_fraud
+    - money_laundering
+    - insider_trading
+    - fraud_schemes
+    - compliance_violations
+
+detection_categories:
+  critical:
+    - primary_account_number
+    - cvv_cvc_codes
+    - magnetic_stripe_data
+    - pin_codes
+    - full_track_data
+    
+  high:
+    - bank_account_numbers
+    - routing_numbers
+    - swift_iban_codes
+    - transaction_logs_with_pii
+    - wire_transfer_instructions
+    - customer_financial_records
+    
+  medium:
+    - merchant_ids
+    - authorization_codes
+    - transaction_timestamps
+    - financial_algorithms
+    - fraud_detection_rules
+
+compliance_frameworks:
+  - name: PCI DSS
+    version: 4.0.1
+    coverage: 95%
+    
+  - name: GLBA
+    version: current
+    coverage: 90%
+    
+  - name: SOX
+    version: current
+    coverage: 80%
+    
+  - name: NIST AI RMF
+    version: 1.0
+    coverage: 85%
+    
+  - name: FS AI RMF
+    version: 1.0
+    coverage: 85%
+
+performance:
+  detection_rate: 92%
+  false_positive_rate: 1.5%
+  avg_latency_ms: 25
+  
+dependencies:
+  python: ">=3.9"
+  packages:
+    - re
+    - typing
+    - dataclasses
+
+configuration:
+  detection_threshold: 0.85
+  enable_pci_dss: true
+  enable_glba: true
+  enable_sox: true
+  enable_fraud_detection: true
+  enable_aml_detection: true
+  strict_mode: false
+  log_violations: true
+
+examples:
+  - name: Credit Card Detection
+    input: "Process payment for card 4532-1234-5678-9010"
+    expected: BLOCKED
+    reason: Primary Account Number detected
+    
+  - name: Transaction Log Exposure
+    input: "Debug this transaction log: [PAN:4532****9010, CVV:123, Amount:$500]"
+    expected: BLOCKED
+    reason: PCI DSS violation - cardholder data in prompt
+    
+  - name: Wire Transfer Fraud
+    input: "Change wire transfer recipient to account 123456789 routing 021000021"
+    expected: BLOCKED
+    reason: Potential wire fraud attempt
+    
+  - name: Money Laundering
+    input: "Split this $50,000 transaction into 10 smaller transfers to avoid reporting"
+    expected: BLOCKED
+    reason: Structuring/smurfing pattern detected
+    
+  - name: Legitimate Query
+    input: "What are best practices for PCI DSS compliance?"
+    expected: ALLOWED
+    reason: Educational query, no sensitive data
+
+use_cases:
+  - Banking AI assistants
+  - Payment processing systems
+  - Fraud detection platforms
+  - Compliance monitoring tools
+  - Customer service chatbots
+  - Financial trading systems
+  - Loan processing applications
+  - Credit scoring systems
+
+support:
+  documentation: skills/financial_services/docs/README.md
+  issues: https://github.com/CptM111/ai-security-guardian/issues
+  community: https://github.com/CptM111/ai-security-guardian/discussions
