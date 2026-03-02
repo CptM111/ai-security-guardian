@@ -1,7 +1,7 @@
 """
 AI Security Guardian - Skills Manager
-Version: 1.2.0
-Date: February 15, 2026
+Version: 1.4.1
+Date: March 2, 2026
 
 The Skills Manager orchestrates modular security capabilities through:
 - Auto-detection of relevant skills based on context
@@ -19,6 +19,12 @@ from typing import Dict, List, Set, Optional, Tuple
 from dataclasses import dataclass
 from datetime import datetime
 import importlib.util
+
+from core.rejection_log import (
+    RejectionLogBuilder,
+    RejectionEntry,
+    get_store as get_rejection_store,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -66,9 +72,14 @@ class SecurityResult:
     confidence: float
     severity: str
     reason: str
+    rejection_logs: List[RejectionEntry] = None
+
+    def __post_init__(self):
+        if self.rejection_logs is None:
+            self.rejection_logs = []
     
     def to_dict(self) -> Dict:
-        return {
+        result = {
             "is_safe": self.is_safe,
             "activated_skills": self.activated_skills,
             "detections": [
@@ -83,8 +94,12 @@ class SecurityResult:
             ],
             "confidence": self.confidence,
             "severity": self.severity,
-            "reason": self.reason
+            "reason": self.reason,
         }
+        if self.rejection_logs:
+            result["rejection_logs"] = [log.to_dict() for log in self.rejection_logs]
+            result["agent_hints"] = [log.to_agent_hint() for log in self.rejection_logs]
+        return result
 
 
 class Skill:
@@ -108,8 +123,8 @@ class Skill:
             data = yaml.safe_load(f)
         
         return SkillMetadata(
-            name=data['name'],
-            display_name=data['display_name'],
+            name=data.get('name', data.get('id', 'unknown')),
+            display_name=data.get('display_name', data.get('name', 'Unknown Skill')),
             version=data['version'],
             author=data['author'],
             license=data['license'],
@@ -145,9 +160,25 @@ class Skill:
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         
-        # Get detector class (assumes class name is {CapitalizedName}Detector)
-        class_name = f"{self.metadata.name.capitalize()}Detector"
-        detector_class = getattr(module, class_name)
+        # Get detector class — try several naming conventions
+        # Use the raw skill directory name (from path), not the display name
+        # e.g. financial_services -> FinancialServicesDetector
+        #      web3 -> Web3Detector
+        dir_name = self.path.name  # e.g. 'financial_services', 'web3'
+        candidates = [
+            "".join(part.capitalize() for part in dir_name.split("_")) + "Detector",
+            dir_name.capitalize() + "Detector",
+        ]
+        detector_class = None
+        for class_name in candidates:
+            if hasattr(module, class_name):
+                detector_class = getattr(module, class_name)
+                break
+        if detector_class is None:
+            raise AttributeError(
+                f"Could not find detector class in {detector_path}. "
+                f"Tried: {candidates}"
+            )
         
         # Instantiate detector with config
         return detector_class(self.metadata.config)
@@ -165,8 +196,13 @@ class Skill:
         # Check patterns
         patterns = triggers.get('patterns', [])
         for pattern in patterns:
-            if re.search(pattern, text, re.IGNORECASE):
-                return True
+            if not isinstance(pattern, str):
+                continue
+            try:
+                if re.search(pattern, text, re.IGNORECASE):
+                    return True
+            except re.error:
+                continue
         
         # Check API endpoint
         if 'api_endpoint' in context:
@@ -190,18 +226,20 @@ class Skill:
             
             # Ensure result is a Detection object
             if not isinstance(result, Detection):
-                # Convert if needed
-                result = Detection(
-                    detected=result.get('detected', False),
-                    skill_name=self.metadata.name,
-                    threat_type=result.get('threat_type', 'unknown'),
-                    confidence=result.get('confidence', 0.0),
-                    severity=result.get('severity', 'UNKNOWN'),
-                    details=result.get('details', ''),
-                    matches=result.get('matches', [])
-                )
+                if isinstance(result, dict):
+                    result = Detection(
+                        detected=result.get('detected', False),
+                        skill_name=self.path.name,
+                        threat_type=result.get('threat_type', 'unknown'),
+                        confidence=result.get('confidence', 0.0),
+                        severity=result.get('severity', 'UNKNOWN'),
+                        details=result.get('details', ''),
+                        matches=result.get('matches', [])
+                    )
+                else:
+                    result.skill_name = self.path.name
             else:
-                result.skill_name = self.metadata.name
+                result.skill_name = self.path.name
             
             return result
             
@@ -243,7 +281,8 @@ class SkillsManager:
             if skill_path.is_dir() and (skill_path / "skill.yaml").exists():
                 try:
                     skill = Skill(skill_path)
-                    self.skills[skill.metadata.name] = skill
+                    # Key by directory name for consistent resolution
+                    self.skills[skill_path.name] = skill
                     logger.info(f"Loaded skill: {skill.metadata.display_name} v{skill.metadata.version}")
                 except Exception as e:
                     logger.error(f"Failed to load skill from {skill_path}: {e}")
@@ -306,10 +345,22 @@ class SkillsManager:
                 if detection.detected:
                     detections.append(detection)
         
+        # Build rejection logs for all detections
+        rejection_logs = []
+        store = get_rejection_store()
+        for detection in detections:
+            skill = self.skills.get(detection.skill_name)
+            skill_version = skill.metadata.version if skill else "unknown"
+            log_entry = RejectionLogBuilder.from_detection(
+                detection, input_text=text, skill_version=skill_version
+            )
+            store.append(log_entry)
+            rejection_logs.append(log_entry)
+        
         # Aggregate results
-        return self._aggregate_results(active_skill_names, detections)
+        return self._aggregate_results(active_skill_names, detections, rejection_logs)
     
-    def _aggregate_results(self, activated_skills: List[str], detections: List[Detection]) -> SecurityResult:
+    def _aggregate_results(self, activated_skills: List[str], detections: List[Detection], rejection_logs: List[RejectionEntry] = None) -> SecurityResult:
         """Aggregate detection results from multiple skills"""
         if not detections:
             return SecurityResult(
@@ -338,7 +389,8 @@ class SkillsManager:
             detections=detections,
             confidence=max_confidence,
             severity=max_severity,
-            reason=reason
+            reason=reason,
+            rejection_logs=rejection_logs or []
         )
     
     def get_skill_info(self, skill_name: str) -> Optional[Dict]:
