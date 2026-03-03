@@ -1,0 +1,54 @@
+id: ai_persona
+name: AI Persona
+display_name: AI Persona
+version: 1.0.0
+category: AI Identity
+description: |
+  Create and manage personal AI avatars (Personas) that can hold conversations,
+  maintain long-term memory across sessions, and be aligned to a specific identity
+  through data feeding. Each Persona stores memories as semantic embeddings,
+  enabling context-aware recall without hallucination.
+
+  Core capabilities:
+  - Create named Personas with custom system prompts and personality traits
+  - Long-term memory via SQLite + cosine-similarity vector search
+  - Feed arbitrary text/documents to align a Persona's knowledge base
+  - Multi-turn chat with automatic memory injection
+  - ASG security layer: all user inputs are screened before reaching the LLM
+
+author: AI Security Guardian Team
+license: MIT
+
+triggers:
+  keywords:
+    - persona
+    - avatar
+    - ai twin
+    - digital twin
+    - chat with
+    - remember
+    - memory
+    - feed data
+
+config:
+  detection_threshold: 0.0   # Persona skill is not a threat detector; always pass-through
+  llm_model: gpt-4.1-mini
+  embedding_model: text-embedding-3-small
+  memory_top_k: 5            # Number of memories to inject per turn
+  memory_db_path: ~/.asg/personas.db
+  max_context_tokens: 8000
+
+capabilities:
+  - long_term_memory
+  - persona_management
+  - data_alignment
+  - secure_chat
+
+performance:
+  avg_latency_ms: 800        # LLM round-trip
+  memory_recall_accuracy: 0.91
+
+threats: []   # This skill is a feature module, not a threat detector
+
+tests:
+  unit: tests/test_ai_persona.py

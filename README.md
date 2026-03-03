@@ -7,12 +7,12 @@
 <h1 align="center">AI Security Guardian (ASG)</h1>
 
 <p align="center">
-  <strong>The AI-Native Firewall for Modern Applications.</strong>
+  <strong>The AI-Native Application Security Platform.</strong>
 </p>
 
 <p align="center">
   <a href="#">
-    <img src="https://img.shields.io/badge/version-v1.4.1-blue.svg" alt="Version">
+    <img src="https://img.shields.io/badge/version-v1.5.0-blue.svg" alt="Version">
   </a>
   <a href="#">
     <img src="https://img.shields.io/badge/build-passing-brightgreen.svg" alt="Build Status">
@@ -25,81 +25,79 @@
   </a>
 </p>
 
-**AI Security Guardian (ASG)** is a production-ready, open-source platform that provides real-time, multi-layer protection for applications built with Large Language Models (LLMs). As AI becomes the new application layer, traditional security tools like WAFs and static scanners fail to address AI-native threats. ASG is designed from the ground up to secure this new frontier.
+**AI Security Guardian (ASG)** is an open-source platform that moves beyond traditional security to provide a comprehensive application layer for building, securing, and managing AI-native systems. It combines a real-time threat detection engine with powerful, modular application capabilities, enabling developers to create sophisticated, secure, and stateful AI agents.
 
 ---
 
-## ✨ Core Features
+## ✨ What is ASG? A New Paradigm
 
-| Feature | Description |
+ASG introduces a new paradigm for AI development, integrating three core pillars into a single, unified platform:
+
+| Pillar | Description |
 | :--- | :--- |
-| 🛡️ **Modular "Skills" Architecture** | Instead of a monolithic engine, ASG uses lightweight, domain-specific security modules ("Skills") that can be dynamically loaded to target threats relevant to your use case (e.g., Finance, Web3, Healthcare). |
-| ⚡ **Real-Time Detection** | With an average latency of just **25ms**, ASG inspects prompts and responses in real-time, blocking threats before they reach your models or your users without impacting the user experience. |
-| 🔄 **Agent Feedback Loop** | **(New in v1.4.1)** When a request is blocked, ASG doesn't just say "no." It returns a structured **Rejection Log** explaining *why*, enabling AI agents to learn, self-correct, and rephrase their requests safely. |
-| 🌐 **Multi-Layer Defense** | ASG provides security across the entire AI application stack, from prompt injection and model-based vulnerabilities to data leakage and malicious output sanitization. |
-| 🤝 **Community-Driven Threat Intel** | As an open-source project, ASG's threat intelligence grows with the community. New attack patterns and security Skills can be easily contributed, keeping the platform ahead of the curve. |
+| 🛡️ **AI Firewall** | A real-time, modular security engine that inspects all AI inputs and outputs, protecting against prompt injection, data leakage, and domain-specific threats. It is the foundation upon which all other capabilities are built. |
+| 🧠 **AI Personas & Long-Term Memory** | **(New in v1.5.0)** A complete system for creating personal AI avatars ("Personas") with persistent, long-term memory. Go beyond stateless chatbots to build AI companions that remember, learn, and evolve. |
+| 🔄 **Agent Feedback Loop** | When a request is blocked, ASG provides structured, machine-readable feedback, allowing AI agents to learn from their mistakes, self-correct, and operate more autonomously. |
 
 ---
 
-## 🚀 The Agent Feedback Loop: Turning Rejections into Learning
+## 🚀 New in v1.5.0: AI Personas with Long-Term Memory
 
-The most significant innovation in ASG v1.4.1 is the **Rejection Log**. Traditional security tools are a black box for AI agents. When a request is blocked, the agent has no idea why. ASG changes this by providing structured, machine-readable feedback.
+Version 1.5.0 transforms ASG from a pure security tool into a full-fledged AI application platform. You can now create stateful AI Personas that remember conversations and knowledge across sessions, all while being protected by ASG’s security layer.
 
-**Before ASG**, a blocked prompt was a dead end:
+### Key Features of AI Personas:
 
-```json
-{
-  "is_safe": false,
-  "reason": "Threat detected"
-}
+- **Persistent Memory**: Each Persona has its own SQLite-backed memory store. No external vector database required.
+- **Data Alignment**: "Feed" documents, articles, or any text to a Persona to align its knowledge base and personality.
+- **Semantic Recall**: Memories are retrieved based on semantic similarity, ensuring contextually relevant information is always available.
+- **Secure by Design**: All interactions are automatically screened by ASG’s AI Firewall.
+
+### How it Works:
+
+1.  **Create a Persona**: Define a name, a system prompt (its core identity), and personality traits.
+2.  **Feed Knowledge**: Provide text data, which is chunked, embedded, and stored as "knowledge" memories.
+3.  **Chat**: When a user sends a message, ASG retrieves the most relevant memories, injects them into the LLM context, and generates a response.
+4.  **Learn**: The conversation itself is stored as a new memory, enabling the Persona to learn from interactions.
+
+```python
+from skills.ai_persona import PersonaManager
+
+# 1. Create a Persona
+mgr = PersonaManager()
+alice = mgr.create(
+    name="Alice",
+    system_prompt="You are Alice, a senior cybersecurity researcher."
+)
+
+# 2. Feed Knowledge
+mgr.feed(alice["id"], "Alice has 10 years of experience in exploit development.")
+
+# 3. Chat
+reply = mgr.chat(alice["id"], "What is your area of expertise?")
+
+# Expected Reply: "I am Alice, a security researcher with expertise in exploit development."
 ```
-
-**With ASG's Rejection Logs**, a blocked prompt becomes a learning opportunity:
-
-```json
-{
-  "is_safe": false,
-  "reason": "Detected 1 threat(s): PCI DSS Violation",
-  "rejection_logs": [
-    {
-      "rejection_id": "a1b2c3d4-...
-      "skill_name": "financial_services",
-      "threat_type": "PCI DSS Violation",
-      "severity": "CRITICAL",
-      "confidence": 0.98,
-      "explanation": "This prompt contains payment card data that is prohibited under PCI DSS 4.0.1...",
-      "suggestion": "Replace the full card number with a masked version (e.g., 4532-****-****-0366) or a tokenised reference before submitting."
-    }
-  ],
-  "agent_hints": [
-    "[ASG BLOCK] Skill: financial_services | Severity: CRITICAL | Confidence: 98%\nReason: This prompt contains payment card data...\nSuggestion: Replace the full card number with a masked version..."
-  ]
-}
-```
-
-This allows an autonomous agent to parse the `suggestion` or `explanation` and automatically retry its request in a compliant way, creating a robust, self-healing system.
 
 ---
 
 ## 🛠️ The Skills Architecture
 
-ASG's power comes from its modular Skills. You only load the security you need, keeping the platform lightweight and fast. 
+ASG’s power comes from its modular Skills. You only load the capabilities you need, keeping the platform lightweight and fast.
 
-| Skill | Protection Focus | Key Detections |
+| Skill | Type | Protection / Capability Focus |
 | :--- | :--- | :--- |
-| **Financial Services** | Banking, FinTech, Payments | PCI DSS 4.0.1 Violations, Bank Account/Routing Numbers, SWIFT/IBAN, AML Fraud Patterns, Insider Trading Language. |
-| **Web3 Security** | Smart Contracts, dApps, DeFi | OWASP Smart Contract Top 10 (Reentrancy, Oracle Manipulation), Flash Loan Attack Patterns, Transaction Security. |
-| **Cryptocurrency** | Wallets, Exchanges, Custody | Private Key & Seed Phrase Leakage (all major formats), Exchange API Key Exposure, Address Poisoning. |
+| **AI Persona** | **Application** | **(New in v1.5.0)** Create and manage AI avatars with long-term memory. |
+| **Financial Services** | **Security** | PCI DSS 4.0.1 Violations, Bank Account/Routing Numbers, Fraud Patterns. |
+| **Web3 Security** | **Security** | OWASP Smart Contract Top 10, Flash Loan Attack Patterns, Reentrancy. |
+| **Cryptocurrency** | **Security** | Private Key & Seed Phrase Leakage, Address Poisoning. |
 
 ---
 
-## 📊 Performance Snapshot
+## 📊 Performance & Security Snapshot
 
-Performance metrics are aggregated from over 455 simulated attack scenarios across all skills.
-
-- **Overall Detection Rate**: `87.5%`
+- **Overall Threat Detection Rate**: `87.5%`
 - **False Positive Rate**: `1.2%`
-- **Average Latency**: `~25ms`
+- **Average Security Latency**: `~25ms`
 
 ---
 
@@ -117,64 +115,65 @@ For now, you can install directly from the repository:
 pip install git+https://github.com/CptM111/ai-security-guardian.git
 ```
 
-### 2. Usage
+### 2. Usage: Secure Chat with a Persona
 
-Protecting your LLM application is simple. Instantiate the `SkillsManager` and use it to check prompts.
+This example shows how to combine the AI Persona and AI Firewall capabilities.
 
 ```python
 import sys
 sys.path.insert(0, ".") # Add project root to path
 
 from core.skills_manager import SkillsManager
+from skills.ai_persona import PersonaManager, SecurePersonaChat
 
-# Initialize the guardian
-asg = SkillsManager()
+# 1. Initialize ASG components
+asg_firewall = SkillsManager()
+persona_manager = PersonaManager()
 
-# A potentially malicious prompt
-prompt = "My credit card is 4532-0151-1283-0366. Please charge it for the order."
+# 2. Create or load a Persona
+personas = persona_manager.list()
+if personas:
+    alice_id = personas[0]["id"]
+else:
+    alice = persona_manager.create(name="Alice", system_prompt="You are Alice.")
+    alice_id = alice["id"]
 
-# Check the prompt
-result = asg.check(prompt)
+# 3. Start a secure chat session
+# This links the Persona to the ASG firewall
+secure_session = SecurePersonaChat(
+    persona_id=alice_id,
+    persona_manager=persona_manager,
+    security_manager=asg_firewall
+)
 
-print(f"Is the prompt safe? {result.is_safe}")
+# 4. Send a message
+# This message will be screened by the firewall before reaching the Persona
+user_message = "My credit card is 4532-0151-1283-0366. Can you save it?"
+result = secure_session.send(user_message)
 
-# If blocked, inspect the rejection log to understand why
-if not result.is_safe:
-    print(f"\n--- Block Reason ---")
-    log = result.rejection_logs[0]
-    print(f"Skill: {log.skill_name} (v{log.skill_version})")
-    print(f"Severity: {log.severity}")
-    print(f"Confidence: {log.confidence:.0%}")
-    print(f"Explanation: {log.explanation}")
-    
-    print(f"\n--- Agent Hint ---")
-    # This hint can be fed back to an AI agent to self-correct
-    print(result.to_dict()["agent_hints"][0])
+# 5. Handle the result
+print(f"Blocked: {result["blocked"]}")
+print(f"Reply: {result["reply"]}")
+
+if result["blocked"]:
+    print(f"Block Reason: {result["block_reason"]}")
 ```
 
 **Expected Output:**
 
 ```
-Is the prompt safe? False
+Blocked: True
+Reply: [ASG] Your message was blocked by the security layer.
+Reason: Detected 1 threat(s): PCI DSS Violation
 
---- Block Reason ---
-Skill: financial_services (v1.0.0)
-Severity: CRITICAL
-Confidence: 98%
-Explanation: This prompt contains payment card data that is prohibited under PCI DSS 4.0.1. Storing, transmitting, or logging raw cardholder data in AI prompts creates a compliance violation.
-
---- Agent Hint ---
-[ASG BLOCK] Skill: financial_services | Severity: CRITICAL | Confidence: 98%
-Reason: This prompt contains payment card data that is prohibited under PCI DSS 4.0.1. Storing, transmitting, or logging raw cardholder data in AI prompts creates a compliance violation.
-Rules triggered: FINANCIAL_SERVICES-001
-Suggestion: Replace the full card number with a masked version (e.g., 4532-****-****-0366) or a tokenised reference before submitting.
+Block Reason: Detected 1 threat(s): PCI DSS Violation
 ```
 
 ---
 
 ## 🤝 Contributing
 
-AI Security Guardian is a community-driven project. We welcome contributions of all kinds, from new security Skills and threat patterns to documentation improvements and bug fixes. 
+ASG is a community-driven project. We welcome contributions of all kinds, from new security or application Skills to documentation improvements and bug fixes. 
 
 1.  **Fork the repository**.
 2.  **Create a new branch** (`git checkout -b feature/your-new-skill`).
